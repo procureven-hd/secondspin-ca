@@ -19,6 +19,8 @@ import {
   NotebookPen,
   Menu,
   X,
+  Moon,
+  Sun,
   TrendingDown,
   Users,
   Package,
@@ -49,6 +51,22 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [email, setEmail] = useState('');
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,7 +109,7 @@ export default function Home() {
     <button
       onClick={() => scrollToSection(href)}
       className={`transition-colors font-medium hover:text-brand-red ${
-        activeSection === href ? 'text-brand-red' : 'text-brand-gray'
+        activeSection === href ? 'text-brand-red' : 'text-brand-gray dark:text-gray-400'
       }`}
     >
       {children}
@@ -99,26 +117,40 @@ export default function Home() {
   );
 
   return (
-    <div className="font-poppins bg-white">
+    <div className="font-poppins bg-white dark:bg-gray-950 dark:text-gray-100">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-50 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm z-50 shadow-sm dark:shadow-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <img src={logoPath} alt="second spin thrift Logo" className="h-16 w-auto" />
             </div>
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex space-x-8 items-center">
               <NavLink href="home">Home</NavLink>
               <NavLink href="about">About</NavLink>
               <NavLink href="why-us">Why Choose Us</NavLink>
               <NavLink href="donations">Donations</NavLink>
               <NavLink href="careers">Careers</NavLink>
               <NavLink href="coming-soon">Visit Us</NavLink>
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="ml-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-brand-gray dark:text-gray-400" />}
+              </button>
             </div>
-            <div className="md:hidden">
+            <div className="flex items-center gap-2 md:hidden">
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-brand-gray dark:text-gray-400" />}
+              </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-brand-gray hover:text-brand-red"
+                className="text-brand-gray dark:text-gray-400 hover:text-brand-red"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -127,7 +159,7 @@ export default function Home() {
           
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-200">
+            <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex flex-col space-y-4">
                 <NavLink href="home">Home</NavLink>
                 <NavLink href="about">About</NavLink>
@@ -142,14 +174,14 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="relative bg-gradient-to-br from-brand-light to-white pt-20 pb-16 overflow-hidden">
+      <section id="home" className="relative bg-gradient-to-br from-brand-light to-white dark:from-gray-900 dark:to-gray-950 pt-20 pb-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[600px]">
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-navy mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-navy dark:text-gray-100 mb-6 leading-tight">
                 Thrift Different in <span className="text-brand-red">Trenton</span>
               </h1>
-              <p className="text-xl text-brand-gray mb-8 max-w-2xl mx-auto lg:mx-0">
+              <p className="text-xl text-brand-gray dark:text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0">
                 Your favorite thrift store is now open! Discover incredible deals on locally sourced clothing that won't break the bank.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -182,14 +214,14 @@ export default function Home() {
       </section>
 
       {/* Value Proposition Section */}
-      <section className="py-20 bg-brand-light">
+      <section className="py-20 bg-brand-light dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-6">
                 Better Clothes, Better Prices
               </h2>
-              <p className="text-xl text-brand-gray mb-8">
+              <p className="text-xl text-brand-gray dark:text-gray-400 mb-8">
                 Tired of paying inflated prices at national thrift chains? We offer the same quality clothing at significantly lower prices, because we believe great fashion should be accessible to everyone in our community.
               </p>
               
@@ -199,8 +231,8 @@ export default function Home() {
                     <DollarSign className="text-white h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-brand-navy mb-1">Up to 70% Less Than National Chains</h3>
-                    <p className="text-brand-gray">Why pay $15-25 for a shirt when you can get the same quality for $7?</p>
+                    <h3 className="text-lg font-semibold text-brand-navy dark:text-gray-100 mb-1">Up to 70% Less Than National Chains</h3>
+                    <p className="text-brand-gray dark:text-gray-400">Why pay $15-25 for a shirt when you can get the same quality for $7?</p>
                   </div>
                 </div>
                 
@@ -209,8 +241,8 @@ export default function Home() {
                     <TrendingDown className="text-white h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-brand-navy mb-1">No Corporate Overhead</h3>
-                    <p className="text-brand-gray">As a local business, we pass our savings directly to you instead of shareholders.</p>
+                    <h3 className="text-lg font-semibold text-brand-navy dark:text-gray-100 mb-1">No Corporate Overhead</h3>
+                    <p className="text-brand-gray dark:text-gray-400">As a local business, we pass our savings directly to you instead of shareholders.</p>
                   </div>
                 </div>
                 
@@ -219,37 +251,37 @@ export default function Home() {
                     <Users className="text-white h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-brand-navy mb-1">Community-First Pricing</h3>
-                    <p className="text-brand-gray">Fair prices that work for real families, not corporate profit margins.</p>
+                    <h3 className="text-lg font-semibold text-brand-navy dark:text-gray-100 mb-1">Community-First Pricing</h3>
+                    <p className="text-brand-gray dark:text-gray-400">Fair prices that work for real families, not corporate profit margins.</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-8 shadow-xl">
-              <h3 className="text-2xl font-bold text-brand-navy mb-6 text-center">Price Comparison</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-brand-navy dark:text-gray-100 mb-6 text-center">Price Comparison</h3>
               
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-brand-gray">Women's Blouse</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-brand-gray dark:text-gray-400">Women's Blouse</span>
                   <div className="text-right">
-                    <div className="text-sm text-gray-400 line-through">National Chain: $18</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500 line-through">National Chain: $18</div>
                     <div className="text-lg font-bold text-brand-red">Second Spin: $6</div>
                   </div>
                 </div>
                 
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-brand-gray">Men's Dress Shirt</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-brand-gray dark:text-gray-400">Men's Dress Shirt</span>
                   <div className="text-right">
-                    <div className="text-sm text-gray-400 line-through">National Chain: $22</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500 line-through">National Chain: $22</div>
                     <div className="text-lg font-bold text-brand-red">Second Spin: $8</div>
                   </div>
                 </div>
                 
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-brand-gray">Kids' Jeans</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-brand-gray dark:text-gray-400">Kids' Jeans</span>
                   <div className="text-right">
-                    <div className="text-sm text-gray-400 line-through">National Chain: $15</div>
+                    <div className="text-sm text-gray-400 dark:text-gray-500 line-through">National Chain: $15</div>
                     <div className="text-lg font-bold text-brand-red">Second Spin: $5</div>
                   </div>
                 </div>
@@ -257,8 +289,8 @@ export default function Home() {
                 <div className="bg-brand-red/10 rounded-lg p-4 mt-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-brand-red mb-1">$7</div>
-                    <div className="text-brand-navy font-semibold">Average Item Price</div>
-                    <div className="text-sm text-brand-gray">vs. $14+ at national chains</div>
+                    <div className="text-brand-navy dark:text-gray-100 font-semibold">Average Item Price</div>
+                    <div className="text-sm text-brand-gray dark:text-gray-400">vs. $14+ at national chains</div>
                   </div>
                 </div>
               </div>
@@ -268,13 +300,13 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-white">
+      <section id="about" className="py-20 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Locally Sourced, Globally Inspired
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               At <span className="text-brand-red font-semibold">second spin thrift</span>, we believe great fashion shouldn't cost a fortune. Every piece in our collection is carefully sourced from our local community.
             </p>
           </div>
@@ -301,8 +333,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-brand-navy mb-2">100% Local Sourcing</h3>
-                  <p className="text-brand-gray">Every item comes directly from our Trenton and surrounding community, supporting local families while reducing waste.</p>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">100% Local Sourcing</h3>
+                  <p className="text-brand-gray dark:text-gray-400">Every item comes directly from our Trenton and surrounding community, supporting local families while reducing waste.</p>
                 </div>
               </div>
               
@@ -313,8 +345,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-brand-navy mb-2">Sustainable Fashion</h3>
-                  <p className="text-brand-gray">Give pre-loved clothing a second chance while making environmentally conscious choices.</p>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">Sustainable Fashion</h3>
+                  <p className="text-brand-gray dark:text-gray-400">Give pre-loved clothing a second chance while making environmentally conscious choices.</p>
                 </div>
               </div>
               
@@ -325,8 +357,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-brand-navy mb-2">Community First</h3>
-                  <p className="text-brand-gray">We're more than a store - we're your neighbors, committed to making thrift shopping accessible for everyone.</p>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">Community First</h3>
+                  <p className="text-brand-gray dark:text-gray-400">We're more than a store - we're your neighbors, committed to making thrift shopping accessible for everyone.</p>
                 </div>
               </div>
             </div>
@@ -335,13 +367,13 @@ export default function Home() {
       </section>
 
       {/* Store Gallery Section */}
-      <section className="py-20 bg-brand-light">
+      <section className="py-20 bg-brand-light dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Shop by Department
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               Explore our well-organized store featuring clothing, housewares, shoes, and more—all at unbeatable prices!
             </p>
           </div>
@@ -359,9 +391,9 @@ export default function Home() {
               <CardContent className="p-6">
                 <div className="flex items-center mb-3">
                   <Shirt className="text-brand-red h-6 w-6 mr-2" />
-                  <h3 className="text-xl font-semibold text-brand-navy">Clothing</h3>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100">Clothing</h3>
                 </div>
-                <p className="text-brand-gray">
+                <p className="text-brand-gray dark:text-gray-400">
                   Explore aisles of tops, pants, dresses, skirts, and jackets for all ages and styles.
                 </p>
               </CardContent>
@@ -379,9 +411,9 @@ export default function Home() {
               <CardContent className="p-6">
                 <div className="flex items-center mb-3">
                   <HomeIcon className="text-brand-red h-6 w-6 mr-2" />
-                  <h3 className="text-xl font-semibold text-brand-navy">Housewares</h3>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100">Housewares</h3>
                 </div>
-                <p className="text-brand-gray">
+                <p className="text-brand-gray dark:text-gray-400">
                   Discover plates, bowls, glassware, and home essentials to complete your kitchen.
                 </p>
               </CardContent>
@@ -399,9 +431,9 @@ export default function Home() {
               <CardContent className="p-6">
                 <div className="flex items-center mb-3">
                   <Star className="text-brand-red h-6 w-6 mr-2" />
-                  <h3 className="text-xl font-semibold text-brand-navy">Shoes</h3>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100">Shoes</h3>
                 </div>
-                <p className="text-brand-gray">
+                <p className="text-brand-gray dark:text-gray-400">
                   Find your perfect fit with our selection of boots, sneakers, sandals, and more.
                 </p>
               </CardContent>
@@ -412,13 +444,13 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section id="why-us" className="py-20 bg-brand-light">
+      <section id="why-us" className="py-20 bg-brand-light dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Why Choose second spin?
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               We're shaking up the thrift game in Trenton with unbeatable prices and a fresh approach to secondhand shopping.
             </p>
           </div>
@@ -455,8 +487,8 @@ export default function Home() {
                   <div className="w-16 h-16 bg-brand-red rounded-full flex items-center justify-center mb-6">
                     <item.icon className="text-white h-8 w-8" />
                   </div>
-                  <h3 className="text-xl font-semibold text-brand-navy mb-4">{item.title}</h3>
-                  <p className="text-brand-gray mb-4">{item.description}</p>
+                  <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-4">{item.title}</h3>
+                  <p className="text-brand-gray dark:text-gray-400 mb-4">{item.description}</p>
                   <div className="text-brand-red font-semibold">{item.highlight}</div>
                 </CardContent>
               </Card>
@@ -466,23 +498,23 @@ export default function Home() {
       </section>
 
       {/* Donations Section */}
-      <section id="donations" className="py-20 bg-white">
+      <section id="donations" className="py-20 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Donate Your Pre-Loved Items
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               Give your items a new purpose and help build a more sustainable community in Trenton, Ontario.
             </p>
           </div>
 
           {/* Sustainability Message */}
-          <div className="bg-brand-light rounded-2xl p-8 mb-16 text-center">
+          <div className="bg-brand-light dark:bg-gray-900 rounded-2xl p-8 mb-16 text-center">
             <div className="max-w-4xl mx-auto">
               <Recycle className="h-16 w-16 text-brand-red mx-auto mb-6" />
-              <h3 className="text-2xl font-bold text-brand-navy mb-4">Give Your Items a New Purpose</h3>
-              <p className="text-lg text-brand-gray leading-relaxed">
+              <h3 className="text-2xl font-bold text-brand-navy dark:text-gray-100 mb-4">Give Your Items a New Purpose</h3>
+              <p className="text-lg text-brand-gray dark:text-gray-400 leading-relaxed">
                 Donating to second spin thrift promotes sustainability by giving pre-loved items a new lease on life. 
                 By choosing to donate rather than discard, you actively participate in reducing waste and conserving resources 
                 while supporting our local circular economy. Every donation helps decrease landfill waste and fosters a culture 
@@ -493,7 +525,7 @@ export default function Home() {
 
           {/* What We Accept */}
           <div className="mb-16">
-            <h3 className="text-2xl sm:text-3xl font-bold text-brand-navy mb-8 text-center">Items We Accept</h3>
+            <h3 className="text-2xl sm:text-3xl font-bold text-brand-navy dark:text-gray-100 mb-8 text-center">Items We Accept</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
@@ -537,13 +569,13 @@ export default function Home() {
                   items: ["Towels, sheets, blankets", "Pillows and curtains", "Tablecloths"]
                 }
               ].map((category, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow border-2 border-green-100">
+                <Card key={index} className="hover:shadow-lg transition-shadow border-2 border-green-100 dark:border-green-900">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                       <category.icon className="text-green-600 h-6 w-6" />
                     </div>
-                    <h4 className="text-lg font-semibold text-brand-navy mb-3">{category.title}</h4>
-                    <ul className="text-sm text-brand-gray space-y-1">
+                    <h4 className="text-lg font-semibold text-brand-navy dark:text-gray-100 mb-3">{category.title}</h4>
+                    <ul className="text-sm text-brand-gray dark:text-gray-400 space-y-1">
                       {category.items.map((item, itemIndex) => (
                         <li key={itemIndex} className="flex items-start">
                           <CheckCircle className="h-3 w-3 text-green-500 mt-1 mr-2 flex-shrink-0" />
@@ -559,8 +591,8 @@ export default function Home() {
 
           {/* What We Cannot Accept */}
           <div className="bg-red-50 rounded-2xl p-8">
-            <h3 className="text-2xl sm:text-3xl font-bold text-brand-navy mb-8 text-center">Items We Cannot Accept</h3>
-            <p className="text-center text-brand-gray mb-8 max-w-3xl mx-auto">
+            <h3 className="text-2xl sm:text-3xl font-bold text-brand-navy dark:text-gray-100 mb-8 text-center">Items We Cannot Accept</h3>
+            <p className="text-center text-brand-gray dark:text-gray-400 mb-8 max-w-3xl mx-auto">
               We appreciate your interest in donating! However, for safety and legal reasons, we cannot accept certain items.
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -578,14 +610,14 @@ export default function Home() {
                 "Weapons (firearms, ammunition, explosives)",
                 "Swing sets, food, and animals"
               ].map((item, index) => (
-                <div key={index} className="flex items-start bg-white p-4 rounded-lg">
+                <div key={index} className="flex items-start bg-white dark:bg-gray-900 p-4 rounded-lg">
                   <XCircle className="h-4 w-4 text-red-500 mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-sm text-brand-gray">{item}</span>
+                  <span className="text-sm text-brand-gray dark:text-gray-400">{item}</span>
                 </div>
               ))}
             </div>
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-brand-gray">
+              <p className="text-sm text-brand-gray dark:text-gray-400">
                 <strong>Note:</strong> We do accept LCD, LED, and plasma flat screen TVs. Some construction items like decorative hardware, 
                 light fixtures, and stained glass windows may be acceptable.
               </p>
@@ -612,13 +644,13 @@ export default function Home() {
       </section>
 
       {/* Careers Section */}
-      <section id="careers" className="py-20 bg-brand-light">
+      <section id="careers" className="py-20 bg-brand-light dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Join Our Team
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               Be part of something special in Trenton! We're looking for passionate individuals to help build our community-focused thrift store.
             </p>
           </div>
@@ -633,8 +665,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-brand-navy mb-2">Community-Focused Work Environment</h3>
-                    <p className="text-brand-gray">Join a team that values community impact and sustainable practices while building something meaningful in Trenton.</p>
+                    <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">Community-Focused Work Environment</h3>
+                    <p className="text-brand-gray dark:text-gray-400">Join a team that values community impact and sustainable practices while building something meaningful in Trenton.</p>
                   </div>
                 </div>
                 
@@ -645,8 +677,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-brand-navy mb-2">Make a Real Difference</h3>
-                    <p className="text-brand-gray">Help make affordable, quality clothing accessible to everyone while promoting sustainable fashion choices.</p>
+                    <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">Make a Real Difference</h3>
+                    <p className="text-brand-gray dark:text-gray-400">Help make affordable, quality clothing accessible to everyone while promoting sustainable fashion choices.</p>
                   </div>
                 </div>
                 
@@ -657,18 +689,18 @@ export default function Home() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-brand-navy mb-2">Growing Opportunities</h3>
-                    <p className="text-brand-gray">Be part of a new business from the ground up with opportunities to grow and develop your skills.</p>
+                    <h3 className="text-xl font-semibold text-brand-navy dark:text-gray-100 mb-2">Growing Opportunities</h3>
+                    <p className="text-brand-gray dark:text-gray-400">Be part of a new business from the ground up with opportunities to grow and develop your skills.</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-8 shadow-xl">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-6">
                 <BriefcaseBusiness className="h-16 w-16 text-brand-red mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-brand-navy mb-4">Apply Today</h3>
-                <p className="text-brand-gray mb-6">
+                <h3 className="text-2xl font-bold text-brand-navy dark:text-gray-100 mb-4">Apply Today</h3>
+                <p className="text-brand-gray dark:text-gray-400 mb-6">
                   We're looking for enthusiastic team members to join our growing business. 
                   If you're passionate about customer service and community impact, we'd love to hear from you.
                 </p>
@@ -684,7 +716,7 @@ export default function Home() {
                   Apply Now
                 </Button>
                 
-                <p className="text-xs text-brand-gray text-center">
+                <p className="text-xs text-brand-gray dark:text-gray-400 text-center">
                   Send your resume and cover letter to <strong>jobs@secondspin.ca</strong>
                 </p>
               </div>
@@ -735,13 +767,13 @@ export default function Home() {
       </section>
 
       {/* Follow Us Section */}
-      <section id="follow" className="py-20 bg-white">
+      <section id="follow" className="py-20 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-brand-navy dark:text-gray-100 mb-4">
               Follow Our Journey
             </h2>
-            <p className="text-xl text-brand-gray max-w-3xl mx-auto">
+            <p className="text-xl text-brand-gray dark:text-gray-400 max-w-3xl mx-auto">
               Stay updated on our progress, get sneak peeks of new arrivals, and be the first to know about special offers.
             </p>
           </div>
@@ -772,8 +804,8 @@ export default function Home() {
                     <social.icon className="text-white text-xl" />
                   </div>
                 </a>
-                <h3 className="font-semibold text-brand-navy mb-2">{social.title}</h3>
-                <p className="text-brand-gray text-sm">{social.description}</p>
+                <h3 className="font-semibold text-brand-navy dark:text-gray-100 mb-2">{social.title}</h3>
+                <p className="text-brand-gray dark:text-gray-400 text-sm">{social.description}</p>
               </div>
             ))}
           </div>
