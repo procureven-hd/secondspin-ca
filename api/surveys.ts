@@ -1,4 +1,4 @@
-import { handleSurveySubmission } from "../server/surveys";
+import { handleSurveySubmission } from "../server/surveys.js";
 
 // Vercel serverless function for POST /api/surveys.
 // Vercel parses the JSON body and adds Express-style res.status().json().

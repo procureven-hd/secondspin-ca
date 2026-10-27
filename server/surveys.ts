@@ -1,5 +1,5 @@
 import pg from "pg";
-import { surveySubmissionSchema } from "../shared/schema";
+import { surveySubmissionSchema } from "../shared/schema.js";
 
 // Used by both the Express server (server/routes.ts) and the Vercel function (api/surveys.ts),
 // so the survey works whichever way the site is hosted. Responses are stored in the
