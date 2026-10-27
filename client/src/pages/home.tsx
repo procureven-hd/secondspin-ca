@@ -862,6 +862,10 @@ export default function Home() {
           
           <div className="border-t border-white/20 pt-8 mt-8 text-center text-sm opacity-90">
             <p>&copy; 2025 second spin thrift. All rights reserved. | A proud Trenton, Ontario business.</p>
+            <p className="mt-2 space-x-4">
+              <a href="/terms" className="hover:text-brand-red transition-colors underline-offset-2 hover:underline">Terms of Service</a>
+              <a href="/privacy" className="hover:text-brand-red transition-colors underline-offset-2 hover:underline">Privacy Policy</a>
+            </p>
           </div>
         </div>
       </footer>

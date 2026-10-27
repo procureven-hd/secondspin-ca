@@ -1,38 +1,28 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { surveySubmissionSchema, type SurveySubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { ChevronLeft } from "lucide-react";
 
-const surveySchema = z.object({
-  visited: z.enum(["yes", "no"], { message: "Please select an option" }),
-  rating: z.number().min(1).max(5).int(),
-  nps: z.number().min(0).max(10).int(),
-  improvement: z.string().min(1, "Please provide feedback").max(500),
-});
-
-type SurveyFormData = z.infer<typeof surveySchema>;
+type SurveyFormData = SurveySubmission;
 
 export default function Survey() {
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const form = useForm<SurveyFormData>({
-    resolver: zodResolver(surveySchema),
+    resolver: zodResolver(surveySubmissionSchema),
     defaultValues: {
       visited: "yes",
       rating: 5,
       nps: 9,
       improvement: "",
+      website: "",
     },
   });
 
@@ -53,7 +43,7 @@ export default function Survey() {
       });
       form.reset();
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: "Error",
         description: "Failed to submit survey. Please try again.",
@@ -62,11 +52,7 @@ export default function Survey() {
     },
   });
 
-  const onSubmit = async (data: SurveyFormData) => {
-    setIsSubmitting(true);
-    await mutation.mutateAsync(data);
-    setIsSubmitting(false);
-  };
+  const onSubmit = (data: SurveyFormData) => mutation.mutate(data);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light to-white">
@@ -135,6 +121,8 @@ export default function Survey() {
                             <button
                               key={num}
                               type="button"
+                              aria-label={`${num} star${num > 1 ? "s" : ""}`}
+                              aria-pressed={field.value === num}
                               onClick={() => field.onChange(num)}
                               className={`w-12 h-12 rounded-full text-2xl transition-all ${
                                 field.value === num
@@ -199,21 +187,29 @@ export default function Survey() {
                       <Textarea
                         placeholder="Share your thoughts..."
                         className="min-h-32 resize-none"
+                        maxLength={500}
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* Spam trap: hidden from people, bots tend to fill it in */}
+              <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <label htmlFor="website">Leave this field empty</label>
+                <input id="website" type="text" tabIndex={-1} autoComplete="off" {...form.register("website")} />
+              </div>
+
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={isSubmitting || mutation.isPending}
+                disabled={mutation.isPending}
                 className="w-full bg-brand-red hover:bg-brand-red-dark text-white py-3 text-lg font-semibold rounded-lg transition-colors"
                 data-testid="button-submit-survey"
               >
-                {isSubmitting || mutation.isPending ? "Sending..." : "Send Survey"}
+                {mutation.isPending ? "Sending..." : "Send Survey"}
               </Button>
             </form>
           </Form>
