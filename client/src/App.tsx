@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -32,6 +33,9 @@ function Router() {
 function App() {
   // Initialize analytics when app loads
   useEffect(() => {
+    // The shareable preview file is for feedback only; keep it out of the store's analytics.
+    if (import.meta.env.VITE_STANDALONE) return;
+
     // Initialize Google Analytics
     if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
       console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
@@ -43,11 +47,21 @@ function App() {
     initMetaPixel();
   }, []);
 
+  // The standalone single-file preview opens from disk, where normal URL paths don't exist,
+  // so it routes with #/terms style links instead.
+  const routes = import.meta.env.VITE_STANDALONE ? (
+    <WouterRouter hook={useHashLocation}>
+      <Router />
+    </WouterRouter>
+  ) : (
+    <Router />
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router />
+        {routes}
       </TooltipProvider>
     </QueryClientProvider>
   );

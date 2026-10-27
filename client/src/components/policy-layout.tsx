@@ -1,13 +1,15 @@
 import { useEffect, type ReactNode } from "react";
 import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import { STORE } from "@/lib/store-info";
 
 export const CONTACT = {
   company: "Second Spin Thrift Inc.",
   street: "390 Sidney Street",
   city: "Trenton, Ontario K8V 2V2",
-  phone: "613-921-7113",
-  phoneHref: "tel:+16139217113",
+  // Same store number as the rest of the site; the policies keep their own contact email.
+  phone: STORE.phone,
+  phoneHref: STORE.phoneHref,
   email: "darryl@secondspin.ca",
 };
 
