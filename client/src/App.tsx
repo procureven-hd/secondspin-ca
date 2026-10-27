@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Survey from "@/pages/survey";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
+import Donations from "@/pages/donations";
 import { useEffect } from "react";
 import { initGA, initMetaPixel } from "../lib/analytics";
 import { useAnalytics } from "../hooks/use-analytics";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/survey" component={Survey} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/donations" component={Donations} />
       <Route component={NotFound} />
     </Switch>
   );
